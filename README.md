@@ -1,111 +1,182 @@
 # PDF Image Processor
 
-Script de Python para automatizar la adición de imágenes a PDFs de manera consistente.
+Un script de Python para automatizar la adición de imágenes (header, watermark y footer) a múltiples archivos PDF de manera profesional.
 
-## 📋 Estado Actual del Proyecto
+## 🚀 Funcionalidades
 
-### ✅ Implementado
-- **Estructura de carpetas organizada**
-- **Script principal** (`pdf_processor.py`) que procesa PDFs
-- **Agregado de imagen de header** (header.jpg) en la esquina superior derecha
-- **Coordenadas hardcodeadas** para el header: 3.46" x 0.781" 
-- **Procesamiento automático** de todos los PDFs en la carpeta `input_pdfs/`
-- **Manejo de errores** y verificaciones de archivos
-- **Entorno virtual** configurado
+### ✅ Implementadas
+- **Header Image**: Agrega una imagen en la parte superior derecha del PDF
+- **Watermark**: Agrega una imagen como marca de agua centrada con opacidad configurable
+- **Footer Image**: Agrega una imagen en la parte inferior del PDF con márgenes uniformes
+- **Procesamiento por lotes**: Procesa automáticamente todos los PDFs en la carpeta `input_pdfs`
+- **Manejo de transparencia**: Procesa correctamente imágenes PNG con transparencia
+- **Archivos temporales**: Sistema organizado de archivos temporales con limpieza automática
 
-### ❌ Pendiente por Implementar
-- **Agregado de watermark** (watermark.png) - No implementado
-- **Agregado de footer** (footer.jpg) - No implementado
-- **Ajuste de coordenadas** para footer y watermark
+### 📋 Características Técnicas
 
-## 🗂️ Estructura del Proyecto
+#### Header (Imagen superior)
+- **Posición**: Esquina superior derecha
+- **Tamaño**: 3.46 x 0.781 pulgadas
+- **Margen**: 0.082 pulgadas desde el borde derecho, 0.20 pulgadas desde el borde superior
+
+#### Watermark (Marca de agua)
+- **Posición**: Centrado vertical y horizontalmente
+- **Tamaño**: 70% del ancho x 50% del alto de la página
+- **Opacidad**: 15% (configurable)
+- **Transparencia**: Manejo automático de PNGs transparentes
+
+#### Footer (Imagen inferior)
+- **Posición**: Parte inferior de la página
+- **Tamaño**: Ancho completo menos márgenes uniformes
+- **Margen**: 0.1 pulgadas desde todos los bordes
+- **Altura**: 1 pulgada
+
+## 📁 Estructura del Proyecto
 
 ```
 add_images_to_pdf/
-├── images/
-│   ├── header.jpg      # Imagen del header (implementada)
-│   ├── footer.jpg      # Imagen del footer (pendiente)
-│   └── watermark.png   # Imagen del watermark (pendiente)
-├── input_pdfs/
-│   └── template.pdf    # PDFs originales a procesar
-├── output_pdfs/
-│   └── template.pdf    # PDFs procesados
-├── myvenv/             # Entorno virtual de Python
-├── pdf_processor.py    # Script principal
-├── requirements.txt    # Dependencias
-└── README.md          # Este archivo
+├── pdf_processor.py          # Script principal
+├── requirements.txt          # Dependencias
+├── .gitignore               # Archivos ignorados por Git
+├── images/                  # Carpeta de imágenes
+│   ├── header.jpg          # Imagen del header
+│   ├── watermark.png       # Imagen del watermark (con transparencia)
+│   └── footer.jpg          # Imagen del footer
+├── input_pdfs/             # PDFs de entrada
+├── output_pdfs/            # PDFs procesados
+└── temp_files/             # Archivos temporales (se crea automáticamente)
 ```
 
-## 🚀 Instalación
+## 🛠️ Instalación
 
-1. **Clonar o descargar el proyecto**
-2. **Activar el entorno virtual:**
+1. **Clonar el repositorio**:
    ```bash
-   source myvenv/bin/activate  # En macOS/Linux
-   # o
-   myvenv\Scripts\activate     # En Windows
+   git clone <url-del-repositorio>
+   cd add_images_to_pdf
    ```
 
-3. **Instalar dependencias:**
+2. **Crear entorno virtual**:
+   ```bash
+   python3 -m venv myvenv
+   source myvenv/bin/activate  # En Windows: myvenv\Scripts\activate
+   ```
+
+3. **Instalar dependencias**:
    ```bash
    pip install -r requirements.txt
    ```
 
-## 📖 Uso
+## 📦 Dependencias
 
-### Procesamiento Básico
+- **PyPDF2**: Para manipulación de PDFs
+- **reportlab**: Para dibujar imágenes en PDFs
+- **Pillow (PIL)**: Para procesamiento de imágenes
+
+## 🎯 Uso
+
+### Preparación
+1. Coloca tus imágenes en la carpeta `images/`:
+   - `header.jpg` - Imagen para el header
+   - `watermark.png` - Imagen para el watermark (recomendado PNG con transparencia)
+   - `footer.jpg` - Imagen para el footer
+
+2. Coloca los PDFs a procesar en la carpeta `input_pdfs/`
+
+### Ejecución
 ```bash
 python pdf_processor.py
 ```
 
-### Qué hace actualmente:
-1. Lee todos los PDFs de la carpeta `input_pdfs/`
-2. Agrega la imagen `header.jpg` en la esquina superior derecha
-3. Guarda los PDFs procesados en `output_pdfs/`
+### Resultado
+- Los PDFs procesados se guardarán en la carpeta `output_pdfs/`
+- Los archivos temporales se crean en `temp_files/` y se eliminan automáticamente
 
-### Coordenadas Actuales del Header:
-- **Posición:** Esquina superior derecha
-- **Tamaño:** 3.46" x 0.781"
-- **Margen derecho:** 0.082"
-- **Margen superior:** 0.20"
+## ⚙️ Configuración
 
-## 🔧 Dependencias
+### Modificar posiciones y tamaños
+Edita las variables en `pdf_processor.py`:
 
-- **PyPDF2**: Manipulación de PDFs
-- **reportlab**: Generación de contenido PDF
-- **Pillow**: Procesamiento de imágenes
+```python
+# Header
+header_width = 3.46 * inch
+header_height = 0.781 * inch
+header_x = page_width - header_width - 0.082 * inch
+header_y = page_height - header_height - 0.20 * inch
 
-## 📝 Próximos Pasos
+# Watermark
+watermark_width = page_width * 0.7  # 70% del ancho
+watermark_height = page_height * 0.5  # 50% del alto
+watermark_x = (page_width - watermark_width) / 2
+watermark_y = (page_height - watermark_height) / 2
 
-1. **Implementar agregado de watermark** con coordenadas precisas
-2. **Implementar agregado de footer** con coordenadas precisas
+# Footer
+margin = 0.1 * inch  # Margen uniforme
+footer_width = page_width - (2 * margin)
+footer_height = 1 * inch
+footer_x = margin
+footer_y = margin
+```
+
+### Modificar opacidad del watermark
+```python
+overlay_canvas.setFillAlpha(0.15)  # Cambia 0.15 por el valor deseado (0.0 a 1.0)
+```
+
+## 🔧 Características Avanzadas
+
+### Manejo de Transparencia
+- El script procesa automáticamente imágenes PNG con transparencia
+- Crea archivos temporales optimizados para evitar fondos negros
+- Limpieza automática de archivos temporales
+
+### Procesamiento por Lotes
+- Procesa automáticamente todos los archivos `.pdf` en `input_pdfs/`
+- Crea la carpeta `output_pdfs/` si no existe
+- Manejo de errores individual por archivo
+
+### Logging Detallado
+- Muestra las dimensiones de cada PDF
+- Indica las posiciones calculadas para cada imagen
+- Confirma la eliminación de archivos temporales
 
 ## 🐛 Solución de Problemas
 
-### Error de importación
+### Error: "No se encontró el PDF"
+- Verifica que los PDFs estén en la carpeta `input_pdfs/`
+- Asegúrate de que tengan extensión `.pdf`
+
+### Error: "No se encontró la imagen"
+- Verifica que las imágenes estén en la carpeta `images/`
+- Confirma los nombres exactos: `header.jpg`, `watermark.png`, `footer.jpg`
+
+### Watermark con fondo negro
+- El script maneja automáticamente la transparencia
+- Si persiste, verifica que el PNG tenga transparencia real
+
+### Error de dependencias
 ```bash
-pip install -r requirements.txt
+pip install --upgrade -r requirements.txt
 ```
 
-### Error de archivo no encontrado
-- Verificar que los archivos estén en las carpetas correctas
-- Verificar nombres de archivos (case-sensitive)
+## 📝 Notas Técnicas
 
-### Error de permisos
-```bash
-chmod +x pdf_processor.py
-```
+- **Unidades**: Todas las medidas están en pulgadas (inch)
+- **Coordenadas**: Sistema de coordenadas de PDF (0,0 en la esquina inferior izquierda)
+- **Formatos soportados**: JPG, PNG (con transparencia)
+- **Compatibilidad**: Funciona con PDFs de cualquier tamaño
 
-## 📊 Estado de Implementación
+## 🤝 Contribuciones
 
-| Funcionalidad | Estado | Archivo |
-|---------------|--------|---------|
-| Header Image | ✅ Implementado | `pdf_processor.py` |
-| Footer Image | ❌ Pendiente | - |
-| Watermark | ❌ Pendiente | - |
-| Coordenadas automáticas | ❌ Pendiente | - |
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
 
----
+## 📄 Licencia
 
-**Última actualización:** Julio 2024
-**Versión:** 1.0.0 (Solo header implementado)
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+
+## 🆘 Soporte
+
+Si encuentras algún problema o tienes sugerencias, por favor abre un issue en el repositorio.
